@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Base image with CUDA 12.6 support (also works on CPU)
 FROM nvidia/cuda:12.6.2-base-ubuntu22.04
 
@@ -17,6 +18,7 @@ RUN apt update && apt install -y --no-install-recommends \
     python3.12-dev \
     python3-pip \
     ffmpeg \
+    git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,12 +29,18 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
 
 # Install PyTorch with CUDA 12.4 support (compatible with CUDA 12.6 runtime)
-RUN python3 -m pip install --no-cache-dir \
+# Cache persists in /var/lib/docker/buildkit/ between builds
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 -m pip install --resume-retries 999999 \
     torch torchaudio --index-url https://download.pytorch.org/whl/cu124
 
-# Install demucs-inference from pinned commit (alpha software, pin for stability)
-RUN python3 -m pip install --no-cache-dir \
-    git+https://github.com/Ryan5453/demucs.git@8654fa473940d3c38255c4e493444d9a75da0be3
+# Install demucs-inference (clone manually to fix readme.md case issue)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    git clone --depth 1 https://github.com/Ryan5453/demucs.git /tmp/demucs \
+    && cd /tmp/demucs \
+    && mv readme.md README.md \
+    && python3 -m pip install --resume-retries 999999 . \
+    && rm -rf /tmp/demucs
 
 # Verify installation
 RUN demucs --help

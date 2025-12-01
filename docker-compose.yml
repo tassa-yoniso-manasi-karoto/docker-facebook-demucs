@@ -8,11 +8,12 @@ services:
       - ./output:/data/output
       - ./models:/data/models
     restart: unless-stopped
-    # GPU support (optional - works without GPU on CPU)
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # GPU support via NVIDIA Container Toolkit (optional)
+    # Uncomment below for GPU acceleration:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
