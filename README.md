@@ -1,7 +1,13 @@
 # Docker Demucs for Langkit
 
 This is a fork of [xserrat/docker-facebook-demucs](https://github.com/xserrat/docker-facebook-demucs),
-updated to use [demucs-inference](https://github.com/Ryan5453/demucs) with modern dependencies.
+updated to use [Ryan5453/demucs](https://github.com/Ryan5453/demucs) with modern dependencies.
+
+> [!CAUTION]
+> **DON'T USE THIS IMAGE DIRECTLY, use [python-audio-separator](https://github.com/nomadkaraoke/python-audio-separator) instead.**
+
+> [!WARNING]
+> In case someone ever uses this image directly nonetheless, please be aware that this docker image is affected by these 2 bugs: https://github.com/Ryan5453/demucs-next/issues/4 and https://github.com/Ryan5453/demucs-next/issues/5 . Langkit has workarounds for these so I won't bother to rebuild a new docker image.
 
 ## Features
 
